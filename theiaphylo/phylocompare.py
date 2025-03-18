@@ -12,6 +12,27 @@ logging.basicConfig(level = logging.DEBUG,
                     format = '%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+def compare_trees(tree1, tree2, mc = True, rf = True, lrm = True, rooted = True):
+    """Quantify tree distances between two phylogenetic trees"""
+    mc_dist, rf_dist, lrm_dist = None, None, None
+    if rooted:
+        # compare rooted trees
+        if rf:
+            # calculate the Robinson-Foulds distance
+            rf_dist = tree1.tree_distance(tree2, method='rooted_robinson_foulds')
+        if mc:
+            # calculate the matching cluster distance
+            mc_dist = tree1.tree_distance(tree2, method='matching_cluster')
+    else:
+        # compare unrooted trees
+        if lrm:
+            # calculate the least lin rajan moret distance
+            lrm_dist = tree1.tree_distance(tree2, method='lin_rajan_moret')
+        if rf:
+            # calculate the Robinson-Foulds distance
+            rf_dist = tree1.tree_distance(tree2, method='unrooted_robinson_foulds')
+    return mc_dist, rf_dist, lrm_dist
+
 def output_results(res_path, tree_res):
     """Output the results of the tree comparison"""
     with open(res_path, 'w') as res_file:

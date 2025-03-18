@@ -3,7 +3,6 @@
 Library of functions for phylogenetic tree analysis in Python
 """
 
-
 from cogent3 import load_tree
 
 class RootError(Exception):
@@ -44,24 +43,3 @@ def import_tree(tree_path, outgroup = [], midpoint = False):
         return root_tree(tree, outgroup, midpoint)
     else:
         return tree
-
-def compare_trees(tree1, tree2, mc = True, rf = True, lrm = True, rooted = True):
-    """Quantify tree distances between two phylogenetic trees"""
-    mc_dist, rf_dist, lrm_dist = None, None, None
-    if rooted:
-        # compare rooted trees
-        if rf:
-            # calculate the Robinson-Foulds distance
-            rf_dist = tree1.tree_distance(tree2, method='rooted_robinson_foulds')
-        if mc:
-            # calculate the matching cluster distance
-            mc_dist = tree1.tree_distance(tree2, method='matching_cluster')
-    else:
-        # compare unrooted trees
-        if lrm:
-            # calculate the least lin rajan moret distance
-            lrm_dist = tree1.tree_distance(tree2, method='lin_rajan_moret')
-        if rf:
-            # calculate the Robinson-Foulds distance
-            rf_dist = tree1.tree_distance(tree2, method='unrooted_robinson_foulds')
-    return mc_dist, rf_dist, lrm_dist
