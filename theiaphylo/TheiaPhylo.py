@@ -1,4 +1,8 @@
 #! /usr/bin/env python3
+"""
+Library of functions for phylogenetic tree analysis in Python
+"""
+
 
 from cogent3 import load_tree
 
