@@ -6,7 +6,8 @@ import re
 class Path(str):
     """A standardized class for handling file paths"""
     def __init__(self, path):
-        self.path = self.format_path(path)
+        self.path = path
+        self.format_path()
 
     def expand_env_var(self):
         """Expands environment variables by regex substitution"""
@@ -15,7 +16,7 @@ class Path(str):
         # replace the environment variables with their values
         for env in envs:
             self.path = self.path.replace(env, os.environ[env.replace('$','')])
-        return self.path.replace('//','/')
+        self.path.replace('//','/')
     
     def format_path(self):
         """Convert all self.path types to absolute self.path with explicit directory ending"""
@@ -23,7 +24,7 @@ class Path(str):
             # expand username
             self.path = os.path.expanduser(self.path)
             # expand environment variables
-            self.path = expand_env_var(self.path)
+            self.expand_env_var()
             # only save the directory ending if it is a directory
             if self.path.endswith('/'):
                 if not os.self.path.isdir(self.path):
