@@ -1,4 +1,4 @@
-name: phylo
+name: theiaphylo
 channels:
   - bioconda
   - conda-forge
