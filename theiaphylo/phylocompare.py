@@ -27,11 +27,13 @@ def main(args, output_file = 'phylocompare_results.txt'):
         rooted = True
         if args.outgroup:
             outgroup = args.outgroup.split(',')
+    else:
+        # CURRENTLY NOT FUNCTIONAL WITHOUT EXPLICIT ROOT
+        raise ValueError('no rooting method provided')
     
     # import the trees
     tree1 = import_tree(Path(args.tree1), outgroup = outgroup, midpoint = args.midpoint)
     tree2 = import_tree(Path(args.tree2), outgroup = outgroup, midpoint = args.midpoint)
-    # DETERMINE IF ROOT EXISTS
 
     # compare the trees
     tree_res = compare_trees(tree1, tree2, rooted = rooted)
