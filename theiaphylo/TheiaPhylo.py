@@ -19,7 +19,7 @@ def root_tree(tree, outgroup = [], midpoint = False):
         # root via outgroup tip if there is 1 list member or it is a string
         if isinstance(outgroup, list):
             outgroup = outgroup[0]
-        return tree.rooted_with_tip(outgroup)
+        return tree.rooted_with_tip(outgroup).bifurcating()
     elif outgroup:
         # root by determining the MRCA branch as the MRCA that contains as few tips as possible 
         # while including those delineated in the outgroup list
