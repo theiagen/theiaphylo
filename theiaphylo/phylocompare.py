@@ -1,13 +1,10 @@
 #! /usr/bin/env python3
 
-import os
-import re
 import sys
 import logging
 import argparse
 from TheiaPhylo import *
 from StdPath import Path
-
 
 def compare_trees(tree1, tree2, mc = True, rf = True, lrm = True, rooted = True):
     """Quantify tree distances between two phylogenetic trees"""
