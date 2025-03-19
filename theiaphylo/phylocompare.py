@@ -8,9 +8,6 @@ import argparse
 from TheiaPhylo import *
 from StdPath import Path
 
-logging.basicConfig(level = logging.DEBUG,
-                    format = '%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
 
 def compare_trees(tree1, tree2, mc = True, rf = True, lrm = True, rooted = True):
     """Quantify tree distances between two phylogenetic trees"""
@@ -48,6 +45,9 @@ def main(args, output_file = 'phylocompare_results.txt'):
         rooted = True
         if args.outgroup:
             outgroup = args.outgroup.split(',')
+            # CURRENTLY NOT FUNCTIONAL WITH MULTIPLE OUTGROUPS
+            if len(outgroup) > 1:
+                raise RootError('multiple outgroups not supported')
     else:
         # CURRENTLY NOT FUNCTIONAL WITHOUT EXPLICIT ROOT
         raise ValueError('no rooting method provided')
@@ -68,7 +68,16 @@ if __name__ == '__main__':
     parser.add_argument('-t2', '--tree2', required = True, help = 'Second tree file')
     parser.add_argument('-o', '--outgroup', help = 'Comma-delimited list of outgroup tips for rooting trees')
     parser.add_argument('-m', '--midpoint', action = 'store_true', help = 'Root trees at midpoint')
+    parser.add_argument('-d', '--debug', action = 'store_true', help = 'Enable debug mode')
     args = parser.parse_args()
+
+    if args.debug:
+        logging.basicConfig(level = logging.DEBUG,
+                            format = '%(asctime)s - %(levelname)s - %(message)s')
+    else:
+        logging.basicConfig(level = logging.INFO,
+                            format = '%(asctime)s - %(levelname)s - %(message)s') 
+    logger = logging.getLogger(__name__)
 
     main(args)
     sys.exit(0)

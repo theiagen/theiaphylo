@@ -3,7 +3,10 @@
 Library of functions for phylogenetic tree analysis in Python
 """
 
+import logging
 from cogent3 import load_tree
+
+logger = logging.getLogger(__name__)
 
 class RootError(Exception):
     def __init__(self, message):
@@ -27,9 +30,9 @@ def root_tree(tree, outgroup = [], midpoint = False):
                  for k, v in tree.get_nodes_dict().items() \
                     if set(outgroup).issubset(set(v.get_tip_names()))}
         mrca_tip_len = min([v[1] for v in list(nodes.values())])
-        mrca_edge = [k for k, v in nodes.items() if v[1] == mrca_tip_len]
+        mrca_edge = [k for k, v in nodes.items() if v[1] == mrca_tip_len][0]
         try:
-            return tree.rooted_at(mrca_edge[0])
+            return tree.rooted_at(mrca_edge).bifurcating()
         except:
             raise RootError(f'tree could not be rooted with supplied tips: ' \
                     + f'{outgroup}')
@@ -40,6 +43,9 @@ def import_tree(tree_path, outgroup = [], midpoint = False):
     """Import a phylogenetic tree"""
     tree = load_tree(tree_path)
     if outgroup or midpoint:
-        return root_tree(tree, outgroup, midpoint)
+        rooted_tree = root_tree(tree, outgroup, midpoint)
+        logger.debug(f'Rooted {tree_path}:\n{rooted_tree.ascii_art()}')
+        return rooted_tree
     else:
+        logger.debug(f'{tree_path}:\n{tree.ascii_art()}') 
         return tree
