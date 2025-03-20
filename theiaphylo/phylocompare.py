@@ -42,7 +42,7 @@ def output_results(res_path, tree_res, rooted = False):
         res_file.write(f"{tree_res[0]}\t{tree_res[1]}\n")
 
 
-def main(args, output_file="phylocompare_distances.txt"):
+def main(args, output_file="phylo_distances.txt"):
     """Main function"""
     outgroup = []
     if args.outgroup and args.midpoint:
