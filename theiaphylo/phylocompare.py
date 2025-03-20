@@ -20,6 +20,7 @@ def compare_trees(tree1, tree2, mc=True, rf=True, lrm=True, rooted=True):
         if mc:
             # calculate the matching cluster distance
             mc_dist = tree1.tree_distance(tree2, method="matching_cluster")
+        return rf_dist, mc_dist
     else:
         # compare unrooted trees
         if lrm:
@@ -28,19 +29,20 @@ def compare_trees(tree1, tree2, mc=True, rf=True, lrm=True, rooted=True):
         if rf:
             # calculate the Robinson-Foulds distance
             rf_dist = tree1.tree_distance(tree2, method="unrooted_robinson_foulds")
-    return mc_dist, rf_dist, lrm_dist
+        return rf_dist, lrm_dist
 
 
-def output_results(res_path, tree_res):
+def output_results(res_path, tree_res, rooted = False):
     """Output the results of the tree comparison"""
     with open(res_path, "w") as res_file:
-        res_file.write(
-            "#robinson_foulds_distance\tmatching_cluster_distance\tlin-rajan-moret_distance\n"
-        )
-        res_file.write(f"{tree_res[0]}\t{tree_res[1]}\t{tree_res[2]}\n")
+        if rooted:
+            res_file.write("#rooted_robinson_foulds\tmatching_cluster\n")
+        else:
+            res_file.write("#unrooted_robinson_foulds\tlin-rajan-moret\n")
+        res_file.write(f"{tree_res[0]}\t{tree_res[1]}\n")
 
 
-def main(args, output_file="phylocompare_results.txt"):
+def main(args, output_file="phylocompare_distances.txt"):
     """Main function"""
     outgroup = []
     if args.outgroup and args.midpoint:
@@ -77,7 +79,7 @@ def main(args, output_file="phylocompare_results.txt"):
     )
 
     # output the results
-    output_results(output_file, tree_res)
+    output_results(output_file, tree_res, rooted = rooted)
 
 
 if __name__ == "__main__":
@@ -118,7 +120,7 @@ if __name__ == "__main__":
         "-lrm",
         "--lin_rajan_moret",
         action="store_true",
-        help="Calculate Lin-Rajan-Moret distance; overwrites default: ALL",
+        help="Calculate Lin-Rajan-Moret distance (unrooted only); overwrites default: ALL",
     )
 
     run_args = parser.add_argument_group("Run Options")
