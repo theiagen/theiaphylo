@@ -46,15 +46,19 @@ def main(args, output_file="phylocompare_results.txt"):
             "cannot root trees at midpoint and with outgroup simultaneously"
         )
     elif args.outgroup or args.midpoint:
+        if args.unrooted:
+            raise ValueError("unrooted and rooting options simultaneously specified")
         rooted = True
         if args.outgroup:
             outgroup = args.outgroup.split(",")
             # CURRENTLY NOT FUNCTIONAL WITH MULTIPLE OUTGROUPS
             if len(outgroup) > 1:
                 raise RootError("multiple outgroups not supported")
-    else:
+    elif not args.unrooted:
         # CURRENTLY NOT FUNCTIONAL WITHOUT EXPLICIT ROOT
         raise ValueError("no rooting method provided")
+    else:
+        rooted = False
 
     # import the trees
     tree1 = import_tree(Path(args.tree1), outgroup=outgroup, midpoint=args.midpoint)
@@ -87,16 +91,20 @@ if __name__ == "__main__":
     phy_args.add_argument(
         "-o",
         "--outgroup",
-        help="Comma-delimited list of outgroup tips for rooting trees",
+        help="Comma-delimited list of outgroup tips to root on their most" \
+            +"recent common ancestor",
     )
     phy_args.add_argument(
         "-m", "--midpoint", action="store_true", help="Root trees at midpoint"
     )
     phy_args.add_argument(
+        "-u", "--unrooted", action="store_true", help="Compare unrooted trees"
+    )
+    phy_args.add_argument(
         "-mc",
         "--matching_cluster",
         action="store_true",
-        help="Calculate matching cluster distance; overwrites default: ALL",
+        help="Calculate matching cluster distance (rooted only); overwrites default: ALL",
     )
     phy_args.add_argument(
         "-rf",
