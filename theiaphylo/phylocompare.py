@@ -5,6 +5,8 @@ import logging
 import argparse
 from TheiaPhylo import *
 from StdPath import Path
+from __init__ import __VERSION__
+
 
 
 def compare_trees(tree1, tree2, mc=True, rf=True, lrm=True, rooted=True):
@@ -123,6 +125,10 @@ if __name__ == "__main__":
     run_args.add_argument(
         "-d", "--debug", action="store_true", help="Enable debug mode"
     )
+    run_args.add_argument(
+        "-v", "--version", action="version", version=str(__VERSION__)
+    )
+    
 
     args = parser.parse_args()
 
