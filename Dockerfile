@@ -19,6 +19,12 @@ RUN git clone https://github.com/theiagen/theiaphylo.git
 
 ENV PATH="/theiaphylo/theiaphylo:${PATH}"
 
-RUN phylocompare.py -h
+RUN phylocompare.py -v \
+    && phylocompare.py /theiaphylo/test/tree1.newick /theiaphylo/test/tree2.newick \
+        --midpoint --debug \
+    && phylocompare.py /theiaphylo/test/tree1.newick /theiaphylo/test/tree2.newick \
+        --outgroup "reference" --debug \
+    && phylocompare.py /theiaphylo/test/tree1.newick /theiaphylo/test/tree1.newick \
+    && rm -rf phylocompare_results.txt /theiaphylo/test
 
 WORKDIR /data
