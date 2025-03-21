@@ -69,15 +69,19 @@ def main(args, output_file="phylo_distances.txt"):
     tree2 = import_tree(Path(args.tree2), outgroup=outgroup, midpoint=args.midpoint)
 
     # compare the trees
-    tree_res = compare_trees(
-        tree1,
-        tree2,
-        rooted=rooted,
-        mc=args.matching_cluster,
-        rf=args.robinson_foulds,
-        lrm=args.lin_rajan_moret,
-    )
-
+    try:
+        tree_res = compare_trees(
+            tree1,
+            tree2,
+            rooted=rooted,
+            mc=args.matching_cluster,
+            rf=args.robinson_foulds,
+            lrm=args.lin_rajan_moret,
+        )
+    except Exception as e:
+        logger.error(f"Error comparing trees: {e}")
+        tree_res = (None, None)
+    
     # output the results
     output_results(output_file, tree_res, rooted = rooted)
 
