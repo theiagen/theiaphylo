@@ -8,7 +8,6 @@ from StdPath import Path
 from __init__ import __VERSION__
 
 
-
 def compare_trees(tree1, tree2, mc=True, rf=True, lrm=True, rooted=True):
     """Quantify tree distances between two phylogenetic trees"""
     mc_dist, rf_dist, lrm_dist = None, None, None
@@ -32,7 +31,7 @@ def compare_trees(tree1, tree2, mc=True, rf=True, lrm=True, rooted=True):
         return rf_dist, lrm_dist
 
 
-def output_results(res_path, tree_res, rooted = False):
+def output_results(res_path, tree_res, rooted=False):
     """Output the results of the tree comparison"""
     with open(res_path, "w") as res_file:
         if rooted:
@@ -63,7 +62,9 @@ def main(args, output_file="phylo_distances.txt"):
     tree1_isrooted = check_root(tree1)
     tree2_isrooted = check_root(tree2)
     if tree1_isrooted != tree2_isrooted:
-        raise RootError(f"{args.tree1} rooted: {tree1_isrooted}; {args.tree2} rooted: {tree2_isrooted}")
+        raise RootError(
+            f"{args.tree1} rooted: {tree1_isrooted}; {args.tree2} rooted: {tree2_isrooted}"
+        )
     elif tree1_isrooted:
         rooted = True
     else:
@@ -90,11 +91,13 @@ def main(args, output_file="phylo_distances.txt"):
                 f"Tips are discrepant: {tree1_tips.symmetric_difference(tree2_tips)}"
             )
         else:
-            logger.error("Number of nodes differ: check for polytomies or rooting discrepancies")
+            logger.error(
+                "Number of nodes differ: check for polytomies or rooting discrepancies"
+            )
         tree_res = (None, None)
-    
+
     # output the results
-    output_results(output_file, tree_res, rooted = rooted)
+    output_results(output_file, tree_res, rooted=rooted)
 
 
 if __name__ == "__main__":
@@ -110,8 +113,8 @@ if __name__ == "__main__":
     phy_args.add_argument(
         "-o",
         "--outgroup",
-        help="Comma-delimited list of outgroup tips to root on their most" \
-            +"recent common ancestor",
+        help="Comma-delimited list of outgroup tips to root on their most"
+        + "recent common ancestor",
     )
     phy_args.add_argument(
         "-m", "--midpoint", action="store_true", help="Root trees at midpoint"
@@ -139,10 +142,7 @@ if __name__ == "__main__":
     run_args.add_argument(
         "-d", "--debug", action="store_true", help="Enable debug mode"
     )
-    run_args.add_argument(
-        "-v", "--version", action="version", version=str(__VERSION__)
-    )
-    
+    run_args.add_argument("-v", "--version", action="version", version=str(__VERSION__))
 
     args = parser.parse_args()
 
