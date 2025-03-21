@@ -57,3 +57,11 @@ def import_tree(tree_path, outgroup=[], midpoint=False):
     else:
         logger.debug(f"{tree_path}:\n{tree.ascii_art()}")
         return tree
+    
+
+def check_root(tree):
+    """Check if a tree is rooted"""
+    if tree.children != 2:
+        return False
+    else:
+        return True
