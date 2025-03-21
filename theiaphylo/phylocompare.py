@@ -80,6 +80,14 @@ def main(args, output_file="phylo_distances.txt"):
         )
     except Exception as e:
         logger.error(f"Error comparing trees: {e}")
+        tree1_tips = set(tree1.get_tip_names())
+        tree2_tips = set(tree2.get_tip_names())
+        if tree1_tips != tree2_tips:
+            logger.error(
+                f"Tips are discrepant: {tree1_tips.symmetric_difference(tree2_tips)}"
+            )
+        else:
+            logger.error("Number of nodes differ: check for polytomies or rooting discrepancies")
         tree_res = (None, None)
     
     # output the results
