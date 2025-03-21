@@ -60,14 +60,16 @@ def main(args, output_file="phylo_distances.txt"):
     tree1 = import_tree(Path(args.tree1), outgroup=outgroup, midpoint=args.midpoint)
     tree2 = import_tree(Path(args.tree2), outgroup=outgroup, midpoint=args.midpoint)
 
-    tree1_rooted = check_root(tree1)
-    tree2_rooted = check_root(tree2)
-    if tree1_rooted != tree2_rooted:
-        raise RootError(f"{args.tree1} rooted: {tree1_rooted}; {args.tree2} rooted: {tree2_rooted}")
-    elif tree1_rooted:
+    tree1_isrooted = check_root(tree1)
+    tree2_isrooted = check_root(tree2)
+    if tree1_isrooted != tree2_isrooted:
+        raise RootError(f"{args.tree1} rooted: {tree1_isrooted}; {args.tree2} rooted: {tree2_isrooted}")
+    elif tree1_isrooted:
         rooted = True
     else:
         rooted = False
+
+    logger.debug(f"Trees are rooted: {tree1_isrooted}")
 
     # compare the trees
     try:
