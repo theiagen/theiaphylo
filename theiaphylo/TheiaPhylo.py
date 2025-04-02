@@ -61,6 +61,7 @@ def import_tree(tree_path, outgroup=[], midpoint=False):
     """Import a phylogenetic tree"""
     tree = load_tree(tree_path)
     if outgroup or midpoint:
+        logger.debug(f"Rooting {tree_path}")
         rooted_tree = root_tree(tree, outgroup, midpoint)
         logger.debug(f"Rooted {tree_path}:\n{rooted_tree.ascii_art()}")
         return rooted_tree
