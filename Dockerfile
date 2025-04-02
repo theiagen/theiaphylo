@@ -15,7 +15,7 @@ RUN python3 -m pip install cogent3
 
 RUN Rscript -e 'install.packages("ape")'
 
-RUN git clone https://github.com/theiagen/theiaphylo.gi
+RUN git clone https://github.com/theiagen/theiaphylo.git
 
 #RUN wget https://github.com/theiagen/theiavalidate/archive/refs/tags/v${THEIAVALIDATE_VER}.tar.gz \
  #   && tar -xzf v${THEIAVALIDATE_VER}.tar.gz \
