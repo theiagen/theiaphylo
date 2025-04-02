@@ -15,6 +15,21 @@ class RootError(Exception):
         super().__init__(self.message)
 
 
+def split_tree(tree, name):
+    node = tree.get_node_matching_name(name)
+    length = (node.length or 0.0) / 2
+    parent = node.parent
+    parent.children.remove(node)
+    node.parent = None
+    left = node.unrooted_deepcopy()
+    left.name = f"{name}-L"
+    right = parent.unrooted_deepcopy()
+    right.name = f"{name}-R"
+    left.length = length
+    right.length = length
+    return left, right
+
+
 def root_tree(tree, outgroup=[], midpoint=False):
     """Root the tree based on outgroup(s)"""
     if midpoint:
@@ -30,15 +45,10 @@ def root_tree(tree, outgroup=[], midpoint=False):
     elif outgroup:
         # root by determining the MRCA branch as the MRCA that contains as few tips as possible
         # while including those delineated in the outgroup list
-        nodes = {
-            k: (v, len(v.get_tip_names()))
-            for k, v in tree.get_nodes_dict().items()
-            if set(outgroup).issubset(set(v.get_tip_names()))
-        }
-        mrca_tip_len = min([v[1] for v in list(nodes.values())])
-        mrca_edge = [k for k, v in nodes.items() if v[1] == mrca_tip_len][0]
+        mrca = tree.get_connecting_node(outgroup)
+        left, reft = split_tree(tree, mrca.name)
         try:
-            return tree.rooted_at(mrca_edge).bifurcating()
+            return type(tree)(name="root", children=[left, reft])
         except:
             raise RootError(
                 f"tree could not be rooted with supplied tips: " + f"{outgroup}"
@@ -65,3 +75,9 @@ def check_root(tree):
         return False
     else:
         return True
+
+
+def rm_lengths(tree):
+    """Remove branch lengths from a tree"""
+    newick = tree.get_newick(with_distances = False)
+    return make_tree(newick)
