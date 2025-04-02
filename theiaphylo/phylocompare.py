@@ -31,14 +31,14 @@ def compare_trees(tree1, tree2, mc=True, rf=True, lrm=True, rooted=True):
         return rf_dist, lrm_dist
 
 
-def output_results(res_path, tree_res, tree_no_len_res, rooted=False):
+def output_results(res_path, tree_res, rooted=False):
     """Output the results of the tree comparison"""
     with open(res_path, "w") as res_file:
         if rooted:
-            res_file.write("#rooted_robinson_foulds\tmatching_cluster\trf_no_lengths\tmc_no_lengths\n")
+            res_file.write("#rooted_robinson_foulds\tmatching_cluster\n")
         else:
-            res_file.write("#unrooted_robinson_foulds\tlin-rajan-moret\trf_no_lengths\tlrm_no_lengths\n")
-        res_file.write(f"{tree_res[0]}\t{tree_res[1]}\t{tree_no_len_res[0]}\t{tree_no_len_res[1]}\n")
+            res_file.write("#unrooted_robinson_foulds\tlin-rajan-moret\n")
+        res_file.write(f"{tree_res[0]}\t{tree_res[1]}\n")
 
 
 def main(args, output_file="phylo_distances.txt"):
@@ -51,6 +51,9 @@ def main(args, output_file="phylo_distances.txt"):
     elif args.outgroup or args.midpoint:
         if args.outgroup:
             outgroup = args.outgroup.split(",")
+            # CURRENTLY NOT FUNCTIONAL WITH MULTIPLE OUTGROUPS
+            if len(outgroup) > 1:
+                raise RootError("multiple outgroups not supported")
 
     # import the trees
     tree1 = import_tree(Path(args.tree1), outgroup=outgroup, midpoint=args.midpoint)
@@ -69,26 +72,11 @@ def main(args, output_file="phylo_distances.txt"):
 
     logger.debug(f"Trees are rooted: {tree1_isrooted}")
 
-    # remove branch lengths for comparison
-    tree1_no_length = rm_lengths(tree1)
-    tree2_no_length = rm_lengths(tree2)
-
     # compare the trees
     try:
-        logger.debug("Comparing trees")
         tree_res = compare_trees(
             tree1,
             tree2,
-            rooted=rooted,
-            mc=args.matching_cluster,
-            rf=args.robinson_foulds,
-            lrm=args.lin_rajan_moret,
-        )
-        # compare the trees without branch lengths
-        logger.debug("Comparing trees without branch lengths")
-        tree_no_len_res = compare_trees(
-            tree1_no_length,
-            tree2_no_length,
             rooted=rooted,
             mc=args.matching_cluster,
             rf=args.robinson_foulds,
@@ -107,10 +95,9 @@ def main(args, output_file="phylo_distances.txt"):
                 "Number of nodes differ: check for polytomies or rooting discrepancies"
             )
         tree_res = (None, None)
-        tree_no_len_res = (None, None)
 
     # output the results
-    output_results(output_file, tree_res, tree_no_len_res, rooted=rooted)
+    output_results(output_file, tree_res, rooted=rooted)
 
 
 if __name__ == "__main__":

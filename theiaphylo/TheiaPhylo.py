@@ -4,7 +4,7 @@ Library of functions for phylogenetic tree analysis in Python
 """
 
 import logging
-from cogent3 import load_tree
+from cogent3 import load_tree, make_tree
 
 logger = logging.getLogger(__name__)
 
