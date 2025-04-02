@@ -30,7 +30,7 @@ RUN phylocompare.py -v \
     && phylocompare.py /theiaphylo/test/tree1.newick /theiaphylo/test/tree2.newick \
         --outgroup "reference" --debug \
     && phylocompare.py /theiaphylo/test/tree1.newick /theiaphylo/test/tree1.newick \
-    && clean_phylo.R /theiaphylo/test/tree1.newick \
+    && Rscript theiaphylo/theiaphylo/clean_phylo.R /theiaphylo/test/tree1.newick \
     && rm -rf phylocompare_results.txt /theiaphylo/test
 
 WORKDIR /data
