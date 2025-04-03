@@ -43,21 +43,10 @@ def output_results(res_path, tree_res, rooted=False):
 
 def main(args, output_file="phylo_distances.txt"):
     """Main function"""
-    outgroup = []
-    if args.outgroup and args.midpoint:
-        raise ValueError(
-            "cannot root trees at midpoint and with outgroup simultaneously"
-        )
-    elif args.outgroup or args.midpoint:
-        if args.outgroup:
-            outgroup = args.outgroup.split(",")
-            # CURRENTLY NOT FUNCTIONAL WITH MULTIPLE OUTGROUPS
-            if len(outgroup) > 1:
-                raise RootError("multiple outgroups not supported")
 
     # import the trees
-    tree1 = import_tree(Path(args.tree1), outgroup=outgroup, midpoint=args.midpoint)
-    tree2 = import_tree(Path(args.tree2), outgroup=outgroup, midpoint=args.midpoint)
+    tree1 = import_tree(Path(args.tree1))
+    tree2 = import_tree(Path(args.tree2))
 
     tree1_isrooted = check_root(tree1)
     tree2_isrooted = check_root(tree2)
@@ -109,16 +98,7 @@ if __name__ == "__main__":
     in_args.add_argument("tree1", help="First tree file")
     in_args.add_argument("tree2", help="Second tree file")
 
-    phy_args = parser.add_argument_group("Phylogenetics Options")
-    phy_args.add_argument(
-        "-o",
-        "--outgroup",
-        help="Comma-delimited list of outgroup tips to root on their most"
-        + "recent common ancestor",
-    )
-    phy_args.add_argument(
-        "-m", "--midpoint", action="store_true", help="Root trees at midpoint"
-    )
+    phy_args = parser.add_argument_group("Distance Options")
     phy_args.add_argument(
         "-mc",
         "--matching_cluster",

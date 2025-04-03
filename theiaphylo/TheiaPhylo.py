@@ -3,7 +3,10 @@
 Library of functions for phylogenetic tree analysis in Python
 """
 
+import sys
 import logging
+import argparse
+from StdPath import Path
 from cogent3 import load_tree, make_tree
 
 logger = logging.getLogger(__name__)
@@ -41,7 +44,10 @@ def root_tree(tree, outgroup=[], midpoint=False):
         # root via outgroup tip if there is 1 list member or it is a string
         if isinstance(outgroup, list):
             outgroup = outgroup[0]
-        return tree.rooted_with_tip(outgroup).bifurcating()
+        if outgroup:
+            return tree.rooted_with_tip(outgroup).bifurcating()
+        else:
+            return tree
     elif outgroup:
         # root by determining the MRCA branch as the MRCA that contains as few tips as possible
         # while including those delineated in the outgroup list
@@ -53,8 +59,6 @@ def root_tree(tree, outgroup=[], midpoint=False):
             raise RootError(
                 f"tree could not be rooted with supplied tips: " + f"{outgroup}"
             )
-    else:
-        raise RootError(f"no outgroup provided")
 
 
 def import_tree(tree_path, outgroup=[], midpoint=False):
@@ -82,3 +86,42 @@ def rm_lengths(tree):
     """Remove branch lengths from a tree"""
     newick = tree.get_newick(with_distances = False)
     return make_tree(newick)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="General phylogenetic analysis tools")
+    parser.add_argument(
+        "-t", "--tree", type=str, required=True, help="Path to the input tree file"
+    )
+    parser.add_argument(
+        "-o", "--outgroup", type=str, help="Comma-delimited outgroup(s) for rooting the tree",
+        default = ''
+    )
+    parser.add_argument(
+        "-m", "--midpoint", action="store_true", help="Use midpoint rooting"
+    )
+    parser.add_argument(
+        "-r", "--remove_lengths", action="store_true", help="Remove branch lengths"
+    )
+    parser.add_argument(
+        "--output", type=str, help="Path to the output tree file"
+    )
+    args = parser.parse_args()
+
+    # Incompatible options
+    if args.outgroup and args.midpoint:
+        raise ValueError("Cannot use both outgroup and midpoint rooting")
+
+    # import the tree
+    tree = import_tree(args.tree, outgroup=args.outgroup.split(","), midpoint=args.midpoint)
+    logger.info(f"Imported tree:\n{tree.ascii_art()}")
+
+    # output the tree
+    if args.output:
+        with open(Path(args.output), "w") as f:
+            f.write(tree.get_newick(with_distances = not args.remove_lengths))
+        logger.info(f"Output tree saved to {args.output}")
+    else:
+        print(tree.get_newick(with_distances = not args.remove_lengths))
+
+    sys.exit(0)
