@@ -92,7 +92,7 @@ def rm_lengths(tree):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="General phylogenetic analysis tools")
     parser.add_argument(
-        "-t", "--tree", type=str, required=True, help="Path to the input tree file"
+        "tree", type=str, help="Path to the input tree file"
     )
     parser.add_argument(
         "-o", "--outgroup", type=str, help="Comma-delimited outgroup(s) for rooting the tree",

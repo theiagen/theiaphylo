@@ -24,12 +24,15 @@ RUN git clone https://github.com/theiagen/theiaphylo.git
 
 ENV PATH="/theiaphylo/theiaphylo:${PATH}"
 
-RUN phylocompare.py -v \
-    && phylocompare.py /theiaphylo/test/tree1.newick /theiaphylo/test/tree2.newick \
-        --midpoint --debug \
-    && phylocompare.py /theiaphylo/test/tree1.newick /theiaphylo/test/tree2.newick \
-        --outgroup "reference" --debug \
-    && phylocompare.py /theiaphylo/test/tree1.newick /theiaphylo/test/tree1.newick \
+RUN test_dir=/theiaphylo/test/ \
+    && TheiaPhylo.py -v \
+    && phylocompare.py -v \
+    && phylocompare.py ${test_dir}tree1.newick ${test_dir}tree2.newick \
+        --debug \
+    && TheiaPhylo.py ${test_dir}tree1.newick --outgroup "reference" --output ${test_dir}tree1_rooted.newick \
+    && TheiaPhylo.py ${test_dir}tree2.newick --outgroup "reference" --output ${test_dir}tree2_rooted.newick \
+    && phylocompare.py ${test_dir}tree1_rooted.newick ${test_dir}tree2_rooted.newick \
+        --debug \
     && Rscript theiaphylo/theiaphylo/clean_phylo.R /theiaphylo/test/tree1.newick \
     && rm -rf phylocompare_results.txt /theiaphylo/test
 

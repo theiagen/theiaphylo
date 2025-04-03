@@ -16,5 +16,5 @@ bifurcation <- is.binary(multifurc_tree)
 write(paste('bifurcating:', bifurcation), stdout())
 
 # write tree
-out_path <- paste(args[1], "clean", sep = "_")
+out_path <- gsub('(.*)\\.([^\\.]+)$', '\\1.clean.\\2', args[1])
 write.tree(multifurc_tree, out_path)
