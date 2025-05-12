@@ -1,4 +1,4 @@
-ARG THEIAPHYLO_VER="0.1.0"
+ARG THEIAPHYLO_VER="0.1.1"
 
 FROM google/cloud-sdk:455.0.0-slim 
 
