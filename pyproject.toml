@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "theiaphylo"
+version = "0.1.1"
+authors = [{name="Zachary Konkel", email="zachary.konkel@theiagen.com"}]
+description = "A collection of phylogenetic analysis tools for Theiagen platforms"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = '>=3.0,<4'
+dependencies = ['cogent3', 'ete3']
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
+    "Operating System :: POSIX :: Linux",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/theiagen/theiaphylo"
+"Bug Tracker" = "https://github.com/theiagen/theiaphylo/issues"
+
+[project.scripts]
+phylocompare = "theiaphylo.phylocompare:cli""
+
+[tool.setuptools.packages.find]
+include = ["theiaphylo*"]  # package names should match these glob patterns (["*"] by default)
+exclude = ["dist*", "test*"]  # exclude packages matching these glob patterns (empty by default)
