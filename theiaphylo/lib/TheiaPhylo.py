@@ -6,7 +6,7 @@ Library of functions for phylogenetic tree analysis in Python
 import sys
 import logging
 import argparse
-from StdPath import Path
+from theiaphylo.lib.StdPath import Path
 from cogent3 import load_tree, make_tree
 from __init__ import __VERSION__
 

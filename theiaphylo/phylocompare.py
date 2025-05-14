@@ -3,8 +3,8 @@
 import sys
 import logging
 import argparse
-from lib.TheiaPhylo import *
-from lib.StdPath import Path
+from theiaphylo.lib.TheiaPhylo import *
+from theiaphylo.lib.StdPath import Path
 from __init__ import __VERSION__
 
 
