@@ -8,7 +8,6 @@ import logging
 import argparse
 from theiaphylo.lib.StdPath import Path
 from cogent3 import load_tree, make_tree
-from __init__ import __VERSION__
 
 logger = logging.getLogger(__name__)
 
@@ -107,9 +106,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "--output", type=str, help="Path to the output tree file"
     )
-    parser.add_argument(
-        "-v", "--version", action="version", version=str(__VERSION__)
-    )
+ #   parser.add_argument(
+#        "-v", "--version", action="version", version=str(__VERSION__)
+  #  )
     args = parser.parse_args()
 
     # Incompatible options
