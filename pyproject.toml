@@ -22,7 +22,7 @@ classifiers = [
 "Bug Tracker" = "https://github.com/theiagen/theiaphylo/issues"
 
 [project.scripts]
-phylocompare = "theiaphylo.phylocompare:cli""
+phylocompare = "theiaphylo.phylocompare:cli"
 
 [tool.setuptools.packages.find]
 include = ["theiaphylo*"]  # package names should match these glob patterns (["*"] by default)
