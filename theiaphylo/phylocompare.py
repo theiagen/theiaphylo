@@ -41,7 +41,7 @@ def output_results(res_path, tree_res, rooted=False):
         res_file.write(f"{tree_res[0]}\t{tree_res[1]}\n")
 
 
-def main(args, output_file="phylo_distances.txt"):
+def run(args, output_file="phylo_distances.txt"):
     """Main function"""
 
     # import the trees
@@ -89,7 +89,7 @@ def main(args, output_file="phylo_distances.txt"):
     output_results(output_file, tree_res, rooted=rooted)
 
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(
         description="Compare phylogenetic trees by distance metrics: "
         + "Robinson-Foulds, Matching Cluster, and Lin-Rajan-Moret"
@@ -146,5 +146,9 @@ if __name__ == "__main__":
         args.robinson_foulds = True
         args.lin_rajan_moret = True
 
-    main(args)
+    run(args)
     sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()
