@@ -6,6 +6,7 @@ Library of functions for phylogenetic tree analysis in Python
 import sys
 import logging
 import argparse
+from theiaphylo._version import __version__
 from theiaphylo.lib.StdPath import Path
 from cogent3 import load_tree, make_tree
 
@@ -106,9 +107,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "--output", type=str, help="Path to the output tree file"
     )
- #   parser.add_argument(
-#        "-v", "--version", action="version", version=str(__VERSION__)
-  #  )
+    parser.add_argument(
+        "-v", "--version", action="version", version=str(__version__)
+    )
     args = parser.parse_args()
 
     # Incompatible options
