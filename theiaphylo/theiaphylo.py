@@ -88,8 +88,7 @@ def rm_lengths(tree):
     newick = tree.get_newick(with_distances = False)
     return make_tree(newick)
 
-
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description="General phylogenetic analysis tools")
     parser.add_argument(
         "tree", type=str, help="Path to the input tree file"
@@ -129,3 +128,7 @@ if __name__ == "__main__":
         print(tree.get_newick(with_distances = not args.remove_lengths))
 
     sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()
