@@ -13,8 +13,7 @@ multifurc_tree <- di2multi(tree)
 
 # report if tree is bifurcating
 bifurcation <- is.binary(multifurc_tree)
-write(paste('bifurcating:', bifurcation), stdout())
+write(paste('bifurcating:', bifurcation), stderr())
 
 # write tree
-out_path <- gsub('(.*)\\.([^\\.]+)$', '\\1.clean.\\2', args[1])
-write.tree(multifurc_tree, out_path)
+write.tree(multifurc_tree, stdout())
