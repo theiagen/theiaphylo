@@ -52,7 +52,11 @@ def root_tree(tree, outgroup=[], midpoint=False):
     elif outgroup:
         # root by determining the MRCA branch as the MRCA that contains as few tips as possible
         # while including those delineated in the outgroup list
-        mrca = tree.get_connecting_node(outgroup)
+        if len(outgroup) > 2:
+            raise RootError(
+                "Outgroup must be a list of 1 or 2 tips, or a single tip string."
+            )
+        mrca = tree.get_connecting_node(outgroup[0], outgroup[1])
         left, reft = split_tree(tree, mrca.name)
         try:
             return type(tree)(name="root", children=[left, reft])

@@ -3,7 +3,7 @@
 import sys
 import logging
 import argparse
-from theiaphylo.theiaphylo import *
+from theiaphylo.phyloutils import *
 from theiaphylo.lib.StdPath import Path
 from theiaphylo._version import __version__
 

@@ -1,4 +1,4 @@
-ARG THEIAPHYLO_VER="0.1.7"
+ARG THEIAPHYLO_VER="0.1.7-dev"
 
 FROM google/cloud-sdk:455.0.0-slim 
 
@@ -24,12 +24,12 @@ RUN Rscript -e 'install.packages("ape")'
 ENV PATH="/theiaphylo/theiaphylo:${PATH}"
 
 RUN test_dir=/theiaphylo/test/ \
-    && theiaphylo -v \
+    && phyloutils -v \
     && phylocompare -v \
     && phylocompare ${test_dir}tree1.newick ${test_dir}tree2.newick \
         --debug \
-    && theiaphylo ${test_dir}tree1.newick --outgroup "reference" --output ${test_dir}tree1_rooted.newick \
-    && theiaphylo ${test_dir}tree2.newick --outgroup "reference" --output ${test_dir}tree2_rooted.newick \
+    && phyloutils ${test_dir}tree1.newick --outgroup "reference" --output ${test_dir}tree1_rooted.newick \
+    && phyloutils ${test_dir}tree2.newick --outgroup "reference" --output ${test_dir}tree2_rooted.newick \
     && phylocompare ${test_dir}tree1_rooted.newick ${test_dir}tree2_rooted.newick \
         --debug \
     && Rscript theiaphylo/theiaphylo/clean_phylo.R /theiaphylo/test/tree1.newick \
