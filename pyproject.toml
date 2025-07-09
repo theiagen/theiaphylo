@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "theiaphylo"
-version = "0.1.7"
+version = "0.1.7-dev"
 authors = [{name="Zachary Konkel", email="zachary.konkel@theiagen.com"}]
 description = "A collection of phylogenetic analysis tools for Theiagen platforms"
 readme = "README.md"
@@ -23,7 +23,7 @@ classifiers = [
 
 [project.scripts]
 phylocompare = "theiaphylo.phylocompare:main"
-theiaphylo = "theiaphylo.theiaphylo:main"
+phyloutils = "theiaphylo.phyloutils:main"
 
 [tool.setuptools.packages.find]
 include = ["theiaphylo*"]  # package names should match these glob patterns (["*"] by default)
