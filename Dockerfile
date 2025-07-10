@@ -1,4 +1,4 @@
-ARG THEIAPHYLO_VER="0.1.7-dev"
+ARG THEIAPHYLO_VER="0.1.7"
 
 FROM google/cloud-sdk:455.0.0-slim 
 
@@ -6,20 +6,19 @@ ARG THEIAPHYLO_VER
 
 RUN apt-get update \
     && apt-get install -y \
-      git procps \
+      procps \
       python3 python3-pip python3-setuptools python3-wheel \
       r-base-core \
     && rm -rf /var/lib/apt/lists/*
 
-RUN git clone https://github.com/theiagen/theiaphylo \
-    && python3 -m pip install /theiaphylo/
+RUN wget https://github.com/theiagen/theiaphylo/archive/refs/tags/v${THEIAPHYLO_VER}.tar.gz \
+    && tar -xzf v${THEIAPHYLO_VER}.tar.gz \
+    && mv theiaphylo-${THEIAPHYLO_VER} /theiaphylo \
+    && rm v${THEIAPHYLO_VER}.tar.gz
+
+RUN python3 -m pip install /theiaphylo/
 
 RUN Rscript -e 'install.packages("ape")'
-
-#RUN wget https://github.com/theiagen/theiavalidate/archive/refs/tags/v${THEIAVALIDATE_VER}.tar.gz \
- #   && tar -xzf v${THEIAVALIDATE_VER}.tar.gz \
-  #  && mv theiavalidate-${THEIAVALIDATE_VER} /theiavalidate \
-   # && rm v${THEIAVALIDATE_VER}.tar.gz
 
 ENV PATH="/theiaphylo/theiaphylo:${PATH}"
 
