@@ -23,6 +23,9 @@ def split_tree(tree, name):
     node = tree.get_node_matching_name(name)
     length = (node.length or 0.0) / 2
     parent = node.parent
+    # report if the node is at the root
+    if not parent:
+        return None, None
     parent.children.remove(node)
     node.parent = None
     left = node.unrooted_deepcopy()
@@ -57,9 +60,16 @@ def root_tree(tree, outgroup=[], midpoint=False):
                 "Outgroup must be a list of 1 or 2 tips, or a single tip string."
             )
         mrca = tree.get_connecting_node(outgroup[0], outgroup[1])
-        left, reft = split_tree(tree, mrca.name)
+        left, right = split_tree(tree, mrca.name)
+        if (left, right,) == (None, None,):
+            logger.warning("Outgroup(s) have no detectable parent node; rooting on outgroups' MRCA may be erroneous")
+            # root on a random tip to then retrieve the other root
+            random_tip = sorted(set(tree.get_tip_names()).difference(set(outgroup)))[0]
+            tree = root_tree(tree, outgroup=random_tip)
+            mrca = tree.get_connecting_node(outgroup[0], outgroup[1])
+            left, right = split_tree(tree, mrca.name)
         try:
-            return type(tree)(name="root", children=[left, reft])
+            return type(tree)(name="root", children=[left, right])
         except:
             raise RootError(
                 f"tree could not be rooted with supplied tips: " + f"{outgroup}"
