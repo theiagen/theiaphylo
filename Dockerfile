@@ -1,4 +1,4 @@
-ARG THEIAPHYLO_VER="0.1.7"
+ARG THEIAPHYLO_VER="0.1.8"
 
 FROM google/cloud-sdk:455.0.0-slim 
 
@@ -18,7 +18,8 @@ RUN wget https://github.com/theiagen/theiaphylo/archive/refs/tags/v${THEIAPHYLO_
 
 RUN python3 -m pip install /theiaphylo/
 
-RUN Rscript -e 'install.packages("ape")'
+RUN Rscript -e 'install.packages(c("ape", "devtools"))' \
+    && Rscript -e 'devtools::install_github("gtonkinhill/fastbaps")'
 
 ENV PATH="/theiaphylo/theiaphylo:${PATH}"
 
