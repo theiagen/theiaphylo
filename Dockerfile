@@ -1,27 +1,31 @@
-ARG THEIAPHYLO_VER="0.1.8"
+ARG THEIAPHYLO_VER="0.1.7"
 
-FROM google/cloud-sdk:455.0.0-slim 
+FROM mambaorg/micromamba
 
 ARG THEIAPHYLO_VER
 
+USER root
+
 RUN apt-get update \
     && apt-get install -y \
-      procps wget \
-      python3 python3-pip python3-setuptools python3-wheel \
-      r-base-core \
+      wget \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+COPY env.yaml /tmp/env.yaml
+
+RUN micromamba install -y -n base -f /tmp/env.yaml \
+    && micromamba clean -a -y 
 
 RUN wget https://github.com/theiagen/theiaphylo/archive/refs/tags/v${THEIAPHYLO_VER}.tar.gz \
     && tar -xzf v${THEIAPHYLO_VER}.tar.gz \
     && mv theiaphylo-${THEIAPHYLO_VER} /theiaphylo \
     && rm v${THEIAPHYLO_VER}.tar.gz
 
-RUN python3 -m pip install /theiaphylo/
-
-RUN Rscript -e 'install.packages(c("ape", "devtools"))' \
-    && Rscript -e 'devtools::install_github("gtonkinhill/fastbaps")'
-
 ENV PATH="/theiaphylo/theiaphylo:${PATH}"
+ENV PATH="/opt/conda/bin/:${PATH}"
+
+RUN python -m pip install /theiaphylo/
 
 RUN test_dir=/theiaphylo/test/ \
     && phyloutils -v \
