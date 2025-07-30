@@ -1,10 +1,8 @@
 ARG THEIAPHYLO_VER="0.1.8"
 
-FROM ubuntu:jammy 
+FROM google/cloud-sdk:532.0.0
 
 ARG THEIAPHYLO_VER
-ARG DEBIAN_FRONTEND=noninteractive
-ENV TZ=ETC/UTC
 
 RUN apt-get update \
   && apt-get install -y \
@@ -13,16 +11,16 @@ RUN apt-get update \
     r-base-core \
   && rm -rf /var/lib/apt/lists/*
 
+RUN Rscript -e 'install.packages("phytools")'
+
 RUN wget https://github.com/theiagen/theiaphylo/archive/refs/tags/v${THEIAPHYLO_VER}.tar.gz \
     && tar -xzf v${THEIAPHYLO_VER}.tar.gz \
     && mv theiaphylo-${THEIAPHYLO_VER} /theiaphylo \
     && rm v${THEIAPHYLO_VER}.tar.gz
 
-RUN python3 -m pip install /theiaphylo/
+RUN python3 -m pip install /theiaphylo/ --break-system-packages
 
-RUN Rscript -e 'install.packages("phytools")'
-
-ENV PATH="/theiaphylo/:${PATH}"
+ENV PATH="/theiaphylo/theiaphylo:${PATH}"
 
 RUN test_dir=/theiaphylo/test/ \
   && phyloutils -v \
