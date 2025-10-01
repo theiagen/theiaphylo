@@ -15,5 +15,6 @@ cophylo_plot <- cophylo(tree1, tree2)
 # plot and save
 pdf("cophylo_plot.pdf")
 plot(cophylo_plot, tip.lty = "solid", link.lwd = 3, link.lty = "solid",
-     link.col = make.transparent("black", 0.2), part = 0.3, lwd=3)
+     link.col = make.transparent("black", 0.2), part = 0.3, lwd=3, 
+     main = cat(c(args[1], " v ", args[2])))
 dev.off()
