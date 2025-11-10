@@ -41,13 +41,40 @@ def output_results(res_path, tree_res, rooted=False):
         res_file.write(f"{tree_res[0]}\t{tree_res[1]}\n")
 
 
-def run(args, output_file="phylo_distances.txt"):
+def check_for_tip_discrepancies(tree1, tree2, resolve_discrepancies=False):
+    """Check for tip discrepancies between two trees"""
+    tree1_tips = set(tree1.get_tip_names())
+    tree2_tips = set(tree2.get_tip_names())
+    discrepant_tips = tree1_tips.symmetric_difference(tree2_tips)
+    if discrepant_tips:
+        if not resolve_discrepancies:
+            raise AttributeError(
+                f"Tips are discrepant: {discrepant_tips}"
+            )
+        else:
+            # remove discrepant tips from both trees
+            logger.warning(f"Removing discrepant tips: {discrepant_tips}")
+            for tip in discrepant_tips:
+                if tip in tree1_tips:
+                    tree1.remove(tip)
+                elif tip in tree2_tips:
+                    tree2.remove(tip)
+    return tree1, tree2
+
+
+def run(args, output_file="phylo_distances.txt", remove_discrepant_tips=False):
     """Main function"""
 
     # import the trees
     tree1 = import_tree(Path(args.tree1))
     tree2 = import_tree(Path(args.tree2))
 
+    # check and optionally resolve tip discrepancies 
+    tree1, tree2 = check_for_tip_discrepancies(
+        tree1, tree2, resolve_discrepancies=remove_discrepant_tips
+    )
+
+    # check for rooting
     tree1_isrooted = check_root(tree1)
     tree2_isrooted = check_root(tree2)
     if tree1_isrooted != tree2_isrooted:
@@ -61,7 +88,6 @@ def run(args, output_file="phylo_distances.txt"):
 
     logger.debug(f"Trees are rooted: {tree1_isrooted}")
 
-    # compare the trees
     try:
         tree_res = compare_trees(
             tree1,
@@ -73,18 +99,12 @@ def run(args, output_file="phylo_distances.txt"):
         )
     except Exception as e:
         logger.error(f"Error comparing trees: {e}")
-        tree1_tips = set(tree1.get_tip_names())
-        tree2_tips = set(tree2.get_tip_names())
-        if tree1_tips != tree2_tips:
-            logger.error(
-                f"Tips are discrepant: {tree1_tips.symmetric_difference(tree2_tips)}"
-            )
-        else:
+        if len(tree1.get_nodes()) != len(tree2.get_nodes()):
             logger.error(
                 "Number of nodes differ: check for polytomies or rooting discrepancies"
             )
         tree_res = (None, None)
-
+    
     # output the results
     output_results(output_file, tree_res, rooted=rooted)
 
