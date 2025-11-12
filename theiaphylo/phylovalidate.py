@@ -62,7 +62,7 @@ def check_for_tip_discrepancies(tree1, tree2, resolve_discrepancies=False):
     return tree1, tree2
 
 
-def run(args, output_file="phylo_distances.txt", remove_discrepant_tips=False):
+def run(args, output_file="phylo_distances.txt"):
     """Main function"""
 
     # import the trees
@@ -71,7 +71,7 @@ def run(args, output_file="phylo_distances.txt", remove_discrepant_tips=False):
 
     # check and optionally resolve tip discrepancies 
     tree1, tree2 = check_for_tip_discrepancies(
-        tree1, tree2, resolve_discrepancies=remove_discrepant_tips
+        tree1, tree2, resolve_discrepancies=args.resolve_discrepancies
     )
 
     # check for rooting
@@ -99,7 +99,7 @@ def run(args, output_file="phylo_distances.txt", remove_discrepant_tips=False):
         )
     except Exception as e:
         logger.error(f"Error comparing trees: {e}")
-        if len(tree1.get_nodes()) != len(tree2.get_nodes()):
+        if len(tree1.get_nodes_dict()) != len(tree2.get_nodes_dict()):
             logger.error(
                 "Number of nodes differ: check for polytomies or rooting discrepancies"
             )
@@ -118,7 +118,13 @@ def main():
     in_args.add_argument("tree1", help="First tree file")
     in_args.add_argument("tree2", help="Second tree file")
 
-    phy_args = parser.add_argument_group("Distance Options")
+    phy_args = parser.add_argument_group("Phylogenetic Options")
+    phy_args.add_argument(
+        "-r",
+        "--resolve_discrepancies",
+        action="store_true",
+        help="Resolve tip discrepancies by removing discrepant tips",
+    )
     phy_args.add_argument(
         "-mc",
         "--matching_cluster",

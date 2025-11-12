@@ -1,4 +1,4 @@
-ARG THEIAPHYLO_VER="0.1.8"
+ARG THEIAPHYLO_VER="0.2.0"
 
 FROM google/cloud-sdk:532.0.0
 
@@ -11,12 +11,9 @@ RUN apt-get update \
     r-base-core \
   && rm -rf /var/lib/apt/lists/*
 
-RUN Rscript -e 'install.packages("phytools")'
+RUN Rscript -e 'install.packages(c("phytools"))'
 
-RUN wget https://github.com/theiagen/theiaphylo/archive/refs/tags/v${THEIAPHYLO_VER}.tar.gz \
-    && tar -xzf v${THEIAPHYLO_VER}.tar.gz \
-    && mv theiaphylo-${THEIAPHYLO_VER} /theiaphylo \
-    && rm v${THEIAPHYLO_VER}.tar.gz
+COPY ./ /theiaphylo/
 
 RUN python3 -m pip install /theiaphylo/ --break-system-packages
 
@@ -27,12 +24,9 @@ RUN test_dir=/theiaphylo/test/ \
   && phylocompare -v \
   && phylocompare ${test_dir}tree1.newick ${test_dir}tree2.newick \
       --debug \
-  && phyloutils ${test_dir}tree1.newick --outgroup "reference" --output ${test_dir}tree1_rooted.newick \
-  && phyloutils ${test_dir}tree2.newick --outgroup "reference" --output ${test_dir}tree2_rooted.newick \
-  && phylocompare ${test_dir}tree1_rooted.newick ${test_dir}tree2_rooted.newick \
-      --debug \
-  && Rscript theiaphylo/theiaphylo/clean_phylo.R /theiaphylo/test/tree1.newick \
-  && Rscript theiaphylo/theiaphylo/gen_cophylo.R ${test_dir}tree1_rooted.newick ${test_dir}tree1_rooted.newick \
+  && Rscript theiaphylo/theiaphylo/clean_phylo.R ${test_dir}tree1.newick > ${test_dir}tree1.clean.newick \
+  && Rscript theiaphylo/theiaphylo/clean_phylo.R ${test_dir}tree2.newick > ${test_dir}tree2.clean.newick \
+  && phyloutils ${test_dir}tree2.clean.newick --outgroup "reference" --output ${test_dir}tree2_rooted.newick \
   && rm -rf phylocompare_results.txt /theiaphylo/test cophylo_plot.pdf
 
 WORKDIR /data
