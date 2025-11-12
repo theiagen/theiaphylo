@@ -21,12 +21,12 @@ ENV PATH="/theiaphylo/theiaphylo:${PATH}"
 
 RUN test_dir=/theiaphylo/test/ \
   && phyloutils -v \
-  && phylocompare -v \
-  && phylocompare ${test_dir}tree1.newick ${test_dir}tree2.newick \
+  && phylovalidate -v \
+  && phylovalidate ${test_dir}tree1.newick ${test_dir}tree2.newick \
       --debug \
   && Rscript theiaphylo/theiaphylo/clean_phylo.R ${test_dir}tree1.newick > ${test_dir}tree1.clean.newick \
   && Rscript theiaphylo/theiaphylo/clean_phylo.R ${test_dir}tree2.newick > ${test_dir}tree2.clean.newick \
   && phyloutils ${test_dir}tree2.clean.newick --outgroup "reference" --output ${test_dir}tree2_rooted.newick \
-  && rm -rf phylocompare_results.txt /theiaphylo/test cophylo_plot.pdf
+  && rm -rf /theiaphylo/test cophylo_*.pdf
 
 WORKDIR /data
