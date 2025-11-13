@@ -13,6 +13,8 @@ RUN apt-get update \
 
 RUN Rscript -e 'install.packages(c("phytools"))'
 
+RUN Rscript -e 'install.packages(c("RColorBrewer"))'
+
 COPY ./ /theiaphylo/
 
 RUN python3 -m pip install /theiaphylo/ --break-system-packages
@@ -26,6 +28,7 @@ RUN test_dir=/theiaphylo/test/ \
       --debug \
   && Rscript theiaphylo/theiaphylo/clean_phylo.R ${test_dir}tree1.newick > ${test_dir}tree1.clean.newick \
   && Rscript theiaphylo/theiaphylo/clean_phylo.R ${test_dir}tree2.newick > ${test_dir}tree2.clean.newick \
+  && Rscript theiaphylo/theiaphylo/gen_cophylo.R ${test_dir}tree1.clean.newick ${test_dir}tree2.clean.newick \
   && phyloutils ${test_dir}tree2.clean.newick --outgroup "reference" --output ${test_dir}tree2_rooted.newick \
   && rm -rf /theiaphylo/test cophylo_*.pdf
 
